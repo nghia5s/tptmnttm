@@ -1,15 +1,15 @@
 <h2 align="center">
     <a href="https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin">
-    🎓 Faculty of Information Technology (DaiNam University)
+    Faculty of Information Technology (DaiNam University)
     </a>
 </h2>
 <h2 align="center">
-   ỨNG DỤNG GIAO DỊCH NỘI BỘ
+   EDGE AI MONITORING SYSTEM
 </h2>
 <div align="center">
     <p align="center">
         <img src="docs/aiotlab_logo.png" alt="AIoTLab Logo" width="170"/>
-        <img src="docs/fitdnu_logo.png" alt="AIoTLab Logo" width="180"/>
+        <img src="docs/fitdnu_logo.png" alt="FIT DNU Logo" width="180"/>
         <img src="docs/dnu_logo.png" alt="DaiNam University Logo" width="200"/>
     </p>
 
@@ -19,138 +19,150 @@
 
 </div>
 
-## 1. Giới thiệu
+## 1. Gioi thieu
 
-Maze Bank Web3 là ứng dụng ngân hàng demo kết hợp backend truyền thống với blockchain local. Người dùng đăng ký và đăng nhập bằng `Account ID` + mật khẩu, sau đó có thể xem số dư, nạp Dcoin, chuyển Dcoin và theo dõi lịch sử giao dịch trên giao diện web.
+Edge AI Monitoring System la du an demo he thong giam sat moi truong va thiet bi tai bien mang. He thong su dung Arduino de doc du lieu cam bien, chay suy luan Edge AI nhe ngay tren phan cung, sau do gui ket qua ve backend Flask thong qua cong Serial.
 
-Dự án sử dụng Hardhat để chạy blockchain cục bộ, smart contract `Dcoin` để quản lý token ERC-20 nội bộ có symbol `DCN`, backend Node.js để quản lý tài khoản và React để hiển thị dashboard. Mỗi tài khoản được gắn một `walletAddress` riêng, còn số dư và lịch sử giao dịch được đồng bộ với smart contract trên Hardhat local chain.
+Dashboard web hien thi du lieu theo thoi gian gan thuc, gom anh sang, am thanh, nhiet do, do am, nuoc mua, trang thai bat thuong va ket qua phan tich AI. Du an chi hien thi du lieu that nhan tu Arduino, khong tu sinh du lieu ao khi chua co phan cung gui len.
 
-## 2. Công nghệ sử dụng
+## 2. Cong nghe su dung
 
-- Frontend: React, React Toastify, CSS.
-- Backend: Node.js HTTP server, file JSON local để lưu thông tin tài khoản.
-- Blockchain: Hardhat local node, Solidity.
-- Smart contract: `Dcoin.sol` theo mô hình ERC-20 có thêm event `DcoinTransaction`.
-- Thư viện Web3: `ethers`.
+- Firmware: Arduino C/C++.
+- Backend: Python Flask.
+- Ket noi phan cung: Serial/USB.
+- Frontend: HTML, CSS va JavaScript thuan.
+- Edge AI: rule/trong so nhe chay truc tiep tren Arduino.
+- Cam bien: LDR, cam bien am thanh, cam bien mua, DHT11/DHT22.
 
-## 3. Chức năng chính
+## 3. Chuc nang chinh
 
-- Đăng ký tài khoản Maze Bank và tự động cấp `Account ID`.
-- Mỗi tài khoản được gắn một địa chỉ ví trên Hardhat local node.
-- Đăng nhập bằng `Account ID` và mật khẩu.
-- Nạp Dcoin vào tài khoản.
-- Chuyển Dcoin giữa các tài khoản bằng `Account ID`.
-- Xem số dư DCN từ smart contract.
-- Xem lịch sử giao dịch theo từng tài khoản.
-- Xem thông tin blockchain local: chiều cao chuỗi, hash mới nhất, danh sách block và giao dịch trong block.
+- Doc du lieu cam bien tu Arduino qua cong Serial.
+- Giam sat anh sang, am thanh, nhiet do, do am va nuoc mua.
+- Tinh diem bat thuong rieng cho tung module cam bien.
+- Phan loai thoi tiet tren phan cung: `rainy`, `sunny`, `cloudy`, `unknown`.
+- Hien thi trang thai `normal`, `warning`, `danger`.
+- Cap nhat dashboard web theo thoi gian gan thuc.
+- Hien thi panel `AI phan tich` voi muc rui ro, tom tat va de xuat hanh dong.
+- Cung cap API de lay trang thai backend, du lieu moi nhat, lich su va ket qua AI.
 
-## 4. Cấu trúc thư mục
+## 4. Cau truc thu muc
 
 ```text
-maze-bank-web3/
-├── backend/
-│   ├── server.js              # API server và logic tài khoản
-│   └── ledger.json            # Dữ liệu runtime được tạo khi chạy local
-├── contracts/
-│   ├── Dcoin.sol              # Token DCN đang được backend/deploy sử dụng
-│   └── DBank.sol              # Contract ghi giao dịch cũ
-├── scripts/
-│   ├── deploy.js              # Deploy smart contract lên Hardhat local
-│   └── dev.js                 # Chạy Hardhat, deploy, backend và frontend cùng lúc
-├── src/
-│   ├── App.jsx                # Màn hình đăng ký/đăng nhập
-│   ├── Dashboard.jsx          # Dashboard tài khoản, giao dịch và block
-│   └── api.js                 # Client gọi API backend
-├── hardhat.config.js
-└── package.json
+edge-ai-monitoring-system/
++-- arduino/
+|   +-- edge_ai_sensor/
+|       +-- edge_ai_sensor.ino
++-- backend/
+|   +-- app.py
+|   +-- config.py
+|   +-- hardware_ai.py
+|   +-- requirements.txt
+|   +-- serial_reader.py
++-- frontend/
+|   +-- templates/
+|   |   +-- index.html
+|   +-- static/
+|       +-- css/
+|       |   +-- style.css
+|       +-- js/
+|           +-- main.js
++-- docs/
+|   +-- huong_dan_chay.md
+|   +-- mo_ta_du_an.md
+|   +-- so_do_he_thong.md
+|   +-- so_do_noi_day.md
++-- README.md
 ```
 
-## 5. Cài đặt và chạy nhanh
+## 5. Cai dat va chay nhanh
 
-Di chuyển vào thư mục dự án:
+Di chuyen vao thu muc backend:
 
-```bash
-cd maze-bank-web3
+```powershell
+cd edge-ai-monitoring-system\backend
 ```
 
-Cài dependencies:
+Tao moi truong ao va cai dependencies:
 
-```bash
-npm.cmd install
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 ```
 
-Chạy toàn bộ hệ thống bằng một lệnh:
+Chay backend:
 
-```bash
-npm.cmd run demo
+```powershell
+python app.py
 ```
 
-Lệnh này sẽ tự động:
+Sau do mo trinh duyet tai:
 
-1. Mở Hardhat local node tại `http://127.0.0.1:8545`.
-2. Deploy contract `Dcoin`.
-3. Mở backend tại `http://localhost:4000`.
-4. Mở frontend tại `http://localhost:3000`.
-
-Khi muốn dừng demo, nhấn `Ctrl + C` trong terminal đang chạy.
-
-## 6. Chạy từng bước
-
-Nếu muốn chạy từng thành phần riêng, mở nhiều terminal trong thư mục `maze-bank-web3`.
-
-Terminal 1: chạy Hardhat local node.
-
-```bash
-npm.cmd run chain:node
+```text
+http://127.0.0.1:5000
 ```
 
-Terminal 2: deploy smart contract.
+## 6. Chay voi Arduino that
 
-```bash
-npm.cmd run chain:deploy
+Trong Arduino IDE, cai cac thu vien:
+
+- `DHT sensor library by Adafruit`
+- `Adafruit Unified Sensor`
+
+Dau cam bien theo so do trong `edge-ai-monitoring-system/docs/so_do_noi_day.md`:
+
+- Anh sang LDR digital `DO`: `D3`.
+- Am thanh analog: `A1`.
+- Nuoc mua analog: `A2`.
+- Nhiet do/do am DHT: `D2`.
+
+Nap firmware:
+
+```text
+edge-ai-monitoring-system/arduino/edge_ai_sensor/edge_ai_sensor.ino
 ```
 
-Terminal 3: chạy backend.
+Chay backend voi cong Serial cu the, vi du `COM4`:
 
-```bash
-npm.cmd run backend
+```powershell
+$env:SERIAL_PORT="COM4"
+python app.py
 ```
 
-Terminal 4: chạy frontend.
+Neu khong dat `SERIAL_PORT`, backend se tu tim cong USB/Arduino phu hop. Neu gap loi `Access is denied`, hay dong Arduino IDE Serial Monitor hoac ung dung khac dang giu cong COM roi chay lai backend.
 
-```bash
-npm.cmd start
-```
+## 7. API chinh
 
-## 7. API chính
+- `GET /api/health`: kiem tra trang thai backend.
+- `GET /api/latest`: lay mau du lieu moi nhat tu Arduino.
+- `GET /api/history`: lay lich su du lieu gan day.
+- `GET /api/ai-analysis`: lay ket qua phan tich AI do Arduino suy luan tren phan cung.
 
-- `GET /api/health`: kiểm tra trạng thái hệ thống và blockchain.
-- `GET /api/chain`: lấy snapshot các block trên chain.
-- `GET /api/blocks/:index`: lấy chi tiết một block.
-- `POST /api/register`: tạo tài khoản mới.
-- `POST /api/login`: đăng nhập tài khoản.
-- `GET /api/accounts/:accountId?password=...`: lấy thông tin tài khoản.
-- `GET /api/accounts/:accountId/transactions?password=...`: lấy lịch sử giao dịch của tài khoản.
-- `POST /api/topup`: nạp Dcoin.
-- `POST /api/transfer`: chuyển Dcoin sang tài khoản khác.
+## 8. Du lieu va schema Edge AI
 
-## 8. File runtime local
+Firmware hien tai gui cac truong phan tich rieng cho tung nhom cam bien:
 
-Trong quá trình chạy local, dự án có thể tạo các file sau:
+- `light_risk`, `light_status`: do bat thuong va trang thai anh sang.
+- `sound_risk`, `sound_status`: do bat thuong va trang thai am thanh.
+- `temperature_risk`, `temperature_status`: do bat thuong va trang thai nhiet do.
+- `humidity_risk`, `humidity_status`: do bat thuong va trang thai do am.
+- `rain_risk`, `rain_status`: do bat thuong va trang thai nuoc mua.
+- `edge_model`: ten model dang chay tren phan cung.
+- `weather_condition`: ket qua phan loai thoi tiet.
+- `weather_confidence`: do tin cay cua ket qua thoi tiet.
+- `ai_risk_level`: muc rui ro do Arduino suy luan.
+- `ai_summary`: tom tat ngan do Arduino tao.
+- `ai_recommendation`: de xuat hanh dong do Arduino tao.
 
-- `maze-bank-web3/backend/ledger.json`: lưu tài khoản, hash mật khẩu và dữ liệu backend.
-- `maze-bank-web3/backend/hardhat-contract.json`: lưu địa chỉ contract đã deploy.
+Dashboard se cho du lieu neu Arduino chua gui Serial JSON hop le hoac chua nap dung firmware moi.
 
-Hai file này phụ thuộc vào môi trường demo local. Nếu muốn reset dữ liệu, dừng các terminal đang chạy, xóa hai file trên, sau đó chạy lại Hardhat node, deploy contract và backend/frontend.
+## 9. Ghi chu
 
-## 9. Ghi chú
-
-- Đây là dự án demo cho môi trường local, chưa tích hợp MetaMask hay mạng blockchain thật.
-- Backend hiện ký giao dịch bằng các account local của Hardhat.
-- Số dư DCN được đọc từ smart contract bằng `balanceOf`.
-- Lịch sử giao dịch được lấy từ event `DcoinTransaction` trên contract `Dcoin`.
-- `DBank.sol` là contract cũ, còn luồng chạy hiện tại dùng `Dcoin.sol`.
+- Backend khong goi Ollama hoac model AI tren may tinh; ket qua AI duoc gui truc tiep tu Arduino.
+- Model hien tai la `arduino_edge_rule_v1`, phu hop voi Arduino pho thong vi su dung rule/trong so nhe.
+- Neu dung DHT22/AM2302, doi `DHT_TYPE` trong file firmware.
+- Co the thay phan rule trong firmware bang TinyML/TensorFlow Lite Micro khi dung board co RAM/Flash lon hon nhu ESP32.
 
 ## 10. License
 
-Dự án được phát triển phục vụ mục đích học tập và demo Web3.
+Du an duoc phat trien phuc vu muc dich hoc tap, demo IoT va Edge AI.
