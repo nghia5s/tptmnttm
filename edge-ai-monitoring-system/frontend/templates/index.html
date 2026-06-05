@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edge AI Monitoring System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <main class="dashboard">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Edge AI Monitoring</p>
+        <h1>Trung tâm giám sát cảm biến</h1>
+        <p class="hero-subtitle">Theo dõi ánh sáng, âm thanh, nhiệt độ, độ ẩm và nước mưa theo thời gian thực.</p>
+      </div>
+      <div class="hero-status">
+        <div id="statusBadge" class="status-badge waiting">
+          <span class="status-dot"></span>
+          <span>Đang kết nối</span>
+        </div>
+        <span class="refresh-note">Cập nhật mỗi 1 giây</span>
+      </div>
+    </section>
+
+    <section class="overview-grid" aria-label="Tổng quan hệ thống">
+      <article class="overview-card">
+        <span>Cổng Serial</span>
+        <strong id="serialPort">--</strong>
+      </article>
+      <article class="overview-card">
+        <span>Lần cập nhật</span>
+        <strong id="updatedAt">--</strong>
+      </article>
+      <article class="overview-card">
+        <span>Dữ liệu</span>
+        <strong id="dataState">Chờ phần cứng</strong>
+      </article>
+      <article class="overview-card">
+        <span>Thời tiết</span>
+        <strong id="weatherState">--</strong>
+      </article>
+      <article class="overview-card">
+        <span>Mô hình AI</span>
+        <strong id="aiModel">Hardware</strong>
+      </article>
+    </section>
+
+    <section class="metrics" aria-label="Chỉ số cảm biến">
+      <article class="metric metric-light">
+        <div class="metric-top">
+          <div>
+            <span class="metric-label">Ánh sáng</span>
+            <small>Cường độ môi trường</small>
+          </div>
+          <span id="lightStatus" class="module-status waiting">--</span>
+        </div>
+        <div class="metric-value">
+          <strong id="lightValue">--</strong>
+          <small>%</small>
+        </div>
+        <div class="meter" aria-hidden="true"><span id="lightMeter"></span></div>
+        <div class="risk-row"><span>Risk</span><strong id="lightRisk">--</strong></div>
+        <div class="risk-meter" aria-hidden="true"><span id="lightRiskMeter"></span></div>
+      </article>
+
+      <article class="metric metric-sound">
+        <div class="metric-top">
+          <div>
+            <span class="metric-label">Âm thanh</span>
+            <small>Mức tín hiệu analog</small>
+          </div>
+          <span id="soundStatus" class="module-status waiting">--</span>
+        </div>
+        <div class="metric-value">
+          <strong id="soundValue">--</strong>
+          <small>%</small>
+        </div>
+        <div class="meter" aria-hidden="true"><span id="soundMeter"></span></div>
+        <div class="risk-row"><span>Risk</span><strong id="soundRisk">--</strong></div>
+        <div class="risk-meter" aria-hidden="true"><span id="soundRiskMeter"></span></div>
+      </article>
+
+      <article class="metric metric-temp">
+        <div class="metric-top">
+          <div>
+            <span class="metric-label">Nhiệt độ</span>
+            <small>Giá trị từ DHT</small>
+          </div>
+          <span id="temperatureStatus" class="module-status waiting">--</span>
+        </div>
+        <div class="metric-value">
+          <strong id="temperatureValue">--</strong>
+          <small>°C</small>
+        </div>
+        <div class="meter" aria-hidden="true"><span id="temperatureMeter"></span></div>
+        <div class="risk-row"><span>Risk</span><strong id="temperatureRisk">--</strong></div>
+        <div class="risk-meter" aria-hidden="true"><span id="temperatureRiskMeter"></span></div>
+      </article>
+
+      <article class="metric metric-humidity">
+        <div class="metric-top">
+          <div>
+            <span class="metric-label">Độ ẩm</span>
+            <small>Độ ẩm không khí từ DHT</small>
+          </div>
+          <span id="humidityStatus" class="module-status waiting">--</span>
+        </div>
+        <div class="metric-value">
+          <strong id="humidityValue">--</strong>
+          <small>%</small>
+        </div>
+        <div class="meter" aria-hidden="true"><span id="humidityMeter"></span></div>
+        <div class="risk-row"><span>Risk</span><strong id="humidityRisk">--</strong></div>
+        <div class="risk-meter" aria-hidden="true"><span id="humidityRiskMeter"></span></div>
+      </article>
+
+      <article class="metric metric-rain">
+        <div class="metric-top">
+          <div>
+            <span class="metric-label">Nước mưa</span>
+            <small>Mức ướt trên cảm biến</small>
+          </div>
+          <span id="rainStatus" class="module-status waiting">--</span>
+        </div>
+        <div class="metric-value">
+          <strong id="rainValue">--</strong>
+          <small>%</small>
+        </div>
+        <div class="meter" aria-hidden="true"><span id="rainMeter"></span></div>
+        <div class="risk-row"><span>Risk</span><strong id="rainRisk">--</strong></div>
+        <div class="risk-meter" aria-hidden="true"><span id="rainRiskMeter"></span></div>
+      </article>
+    </section>
+
+    <section class="charts-grid" aria-label="Biểu đồ realtime">
+      <article class="panel chart-panel trend-panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Sensor Trend</p>
+            <h2>Diễn biến cảm biến</h2>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-item light">Ánh sáng</span>
+            <span class="legend-item sound">Âm thanh</span>
+            <span class="legend-item temp">Nhiệt độ</span>
+            <span class="legend-item humidity">Độ ẩm</span>
+            <span class="legend-item rain">Nước mưa</span>
+          </div>
+        </div>
+        <div class="chart-body">
+          <svg id="sensorTrendChart" class="line-chart" viewBox="0 0 720 260" role="img" aria-label="Biểu đồ dữ liệu cảm biến"></svg>
+          <p id="trendEmpty" class="chart-empty">Chưa đủ dữ liệu để vẽ biểu đồ</p>
+        </div>
+      </article>
+
+      <article class="panel chart-panel risk-panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Anomaly Risk</p>
+            <h2>Mức bất thường gần đây</h2>
+          </div>
+          <span id="chartSampleCount" class="pill">0 điểm</span>
+        </div>
+        <div id="riskBars" class="risk-bars" aria-label="Biểu đồ thanh risk"></div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel ai-panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">AI Insight</p>
+            <h2>Phân tích trên phần cứng</h2>
+          </div>
+          <span id="aiState" class="pill waiting">Chờ dữ liệu</span>
+        </div>
+        <div class="ai-content">
+          <section>
+            <span>Tổng quan</span>
+            <p id="aiSummary">Chờ dữ liệu từ phần cứng</p>
+          </section>
+          <section>
+            <span>Thời tiết</span>
+            <p id="aiWeather">--</p>
+          </section>
+          <section>
+            <span>Đề xuất</span>
+            <p id="aiRecommendation">--</p>
+          </section>
+        </div>
+      </article>
+
+      <article class="panel detail-panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Hardware</p>
+            <h2>Kết nối phần cứng</h2>
+          </div>
+        </div>
+        <dl class="detail-list">
+          <div>
+            <dt>Cổng đang đọc</dt>
+            <dd id="serialDetail">--</dd>
+          </div>
+          <div>
+            <dt>Trạng thái đọc</dt>
+            <dd id="connectionDetail">Đang kiểm tra</dd>
+          </div>
+          <div>
+            <dt>Lỗi gần nhất</dt>
+            <dd id="errorDetail">--</dd>
+          </div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="panel-header">
+        <div>
+          <p class="panel-kicker">Realtime Log</p>
+          <h2>Lịch sử dữ liệu</h2>
+        </div>
+        <span id="sampleCount" class="pill">0 mẫu</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Thời gian</th>
+              <th>Ánh sáng</th>
+              <th>Risk AS</th>
+              <th>Âm thanh</th>
+              <th>Risk AT</th>
+              <th>Nhiệt độ</th>
+              <th>Risk ND</th>
+              <th>Độ ẩm</th>
+              <th>Risk DA</th>
+              <th>Nước mưa</th>
+              <th>Risk NM</th>
+              <th>Tổng</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
